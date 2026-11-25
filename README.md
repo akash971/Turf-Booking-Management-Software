@@ -32,25 +32,56 @@ A modern, mobile-first Sports Turf & Box Cricket Booking System built with **Nex
   - **Real `.xlsx` Excel Export** powered by SheetJS (`xlsx`) with auto-fitted column widths, currency formatting, auto-filters, and a companion Summary sheet.
   - **Pricing & Turf Settings** tab to edit `5v5` / `6v6` / `7v7` rates, custom player rate formulas, daily time slots, and the fallback admin WhatsApp number.
 
-## Quick Start (Local SQLite)
+---
 
-1. Copy `.env.example` to `.env.local` (a default `.env.local` is already configured for local testing):
-   ```bash
-   cp .env.example .env.local
-   ```
-2. Install dependencies and start the development server:
-   ```bash
-   npm install
-   npm run dev
-   ```
-3. Open:
-   - Customer Booking Page: `http://localhost:3000`
-   - Admin Dashboard: `http://localhost:3000/admin` (default password in `.env.local`: `admin123`)
+## Running on Another PC (GitHub + Antigravity)
 
-## Switching to Supabase (PostgreSQL)
+This repository includes [`AGENTS.md`](./AGENTS.md) and an automatic local setup script (`scripts/setup.mjs`), so you can clone it on any PC and resume working in Antigravity immediately.
+
+### Prerequisites
+- **Node.js `>= 22.5.0`** (Node 24 LTS recommended — see [`.nvmrc`](./.nvmrc))
+- **Git**
+
+### 1. Clone & Open in Antigravity
+```bash
+git clone https://github.com/akash971/Turf-Booking-Management-Software.git
+cd Turf-Booking-Management-Software
+```
+Open the cloned folder in **Antigravity**. Antigravity will automatically read [`AGENTS.md`](./AGENTS.md) to load full project architecture and workflow context.
+
+### 2. Install & Run (Auto-bootstraps `.env.local` + SQLite DB)
+```bash
+npm install
+npm run dev
+```
+*(On Windows PowerShell if execution policy blocks `npm.ps1`, use `npm.cmd install` and `npm.cmd run dev`.)*
+
+`npm run dev` automatically runs `scripts/setup.mjs` to create `.env.local` from `.env.example` on first run and initialize the local SQLite database in `./data/turf-bookings.db`.
+
+- **Customer Booking Page:** `http://localhost:3000`
+- **Admin Dashboard:** `http://localhost:3000/admin` (default password: `admin123`)
+
+### 3. Sync Changes Between PCs
+Before starting work on another PC:
+```bash
+git pull origin main
+npm install
+```
+After making changes:
+```bash
+git add .
+git commit -m "Describe your changes"
+git push origin main
+```
+
+---
+
+## Sharing Live Data Across PCs (Supabase PostgreSQL)
+
+Local SQLite (`./data/turf-bookings.db`) stays on each PC and is excluded from Git. To share bookings and settings across multiple PCs or deploy to production:
 
 1. Run [`supabase/schema.sql`](./supabase/schema.sql) in your Supabase SQL Editor.
-2. Update `.env.local`:
+2. Update `.env.local` on each PC (or set environment variables in Vercel / your host):
    ```env
    DATABASE_PROVIDER=supabase
    NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
