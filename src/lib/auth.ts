@@ -4,11 +4,25 @@ import { cookies } from "next/headers";
 const COOKIE_NAME = "turf_admin_session";
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 12; // 12 hours
 
+let warnedMissingProdSecrets = false;
+
+function warnIfDefaultSecretsInProd(): void {
+  if (warnedMissingProdSecrets || process.env.NODE_ENV !== "production") return;
+  if (!process.env.ADMIN_PASSWORD || !process.env.ADMIN_SESSION_SECRET) {
+    warnedMissingProdSecrets = true;
+    console.warn(
+      "[auth] Warning: ADMIN_PASSWORD or ADMIN_SESSION_SECRET is not set in production. Set both in your Render environment variables."
+    );
+  }
+}
+
 function getAdminPassword(): string {
+  warnIfDefaultSecretsInProd();
   return process.env.ADMIN_PASSWORD || "admin123";
 }
 
 function getSessionSecret(): string {
+  warnIfDefaultSecretsInProd();
   return (
     process.env.ADMIN_SESSION_SECRET ||
     "emerald-arena-fallback-secret-change-in-prod"
