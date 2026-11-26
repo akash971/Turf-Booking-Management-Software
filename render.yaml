@@ -5,14 +5,12 @@ services:
     plan: free
     branch: main
     autoDeploy: true
-    buildCommand: npm ci && npm run build
+    buildCommand: npm ci --include=dev && npm run build
     startCommand: npm run start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_VERSION
         value: "24"
-      - key: NODE_ENV
-        value: production
       - key: DATABASE_PROVIDER
         value: supabase
       - key: NEXT_PUBLIC_SUPABASE_URL
